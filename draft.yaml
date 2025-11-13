@@ -1,0 +1,47 @@
+models:
+  Instansi:
+    nama: string
+    softDeletes: true
+    relationships:
+      hasMany: Rombel
+
+  TahunPelajaran:
+    nama: string
+    softDeletes: true
+    relationships:
+      hasMany: Rombel
+
+  Jurusan:
+    nama: string
+    softDeletes: true
+    relationships:
+      hasMany: Kelas
+
+  Kelas:
+    nama: string
+    jurusan_id: id foreignId:Jurusan onUpdate:cascade onDelete:restrict
+    softDeletes: true
+    relationships:
+      hasMany: Rombel
+
+  Guru:
+    nama: string
+    softDeletes: true
+    relationships:
+      hasMany: Rombel
+
+  Siswa:
+    nama: string
+    softDeletes: true
+    relationships:
+      belongsToMany: Rombel # UBAH INI!
+
+  Rombel:
+    nama: string # Tambahkan nama rombel, misal: "X IPA 1"
+    instansi_id: id foreignId:Instansi onUpdate:cascade onDelete:restrict
+    tahun_pelajaran_id: id foreignId:TahunPelajaran onUpdate:cascade onDelete:restrict
+    kelas_id: id foreignId:Kelas onUpdate:cascade onDelete:restrict
+    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict
+    softDeletes: true
+    relationships:
+      belongsToMany: Siswa # TAMBAH INI!
