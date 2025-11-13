@@ -1,208 +1,262 @@
-# ===============================================
-# Blueprint Aplikasi Jurnal Kelas/Jurnal Mengajar
-# ===============================================
-
 models:
+  # =============================================================================
+  Provinsi:
+    id: uuid primary
+    nama: string
+    kode_provinsi: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Kabupaten:
+    id: uuid primary
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict
+    nama: string
+    kategori: enum:'Kabupaten','Kota'
+    kode_kabupaten: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Kecamatan:
+    id: uuid primary
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict
+    nama: string
+    kode_kecamatan: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Kelurahan:
+    id: uuid primary
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict
+    nama: string
+    kode_kelurahan: string
+    kode_pos: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
   Instansi:
+    id: uuid primary
     nama: string
-    alamat: text nullable
-    kode_instansi: string unique nullable
     softDeletes: true
-    timestamps: true
-    relationships:
-      hasMany: Rombel
-
-  TahunPelajaran:
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Departemen:
+    id: uuid primary
     nama: string
-    tahun_mulai: year
-    tahun_selesai: year
-    semester: "enum:1,2"
-    is_aktif: boolean default:false
     softDeletes: true
-    timestamps: true
-    relationships:
-      hasMany: Rombel, JadwalPelajaran
-
-  MataPelajaran:
-    kode: string unique
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Jabatan:
+    id: uuid primary
     nama: string
-    kelompok: "enum:A,B,C"
     softDeletes: true
-    timestamps: true
-    relationships:
-      belongsToMany: Guru
-      hasMany: JadwalPelajaran
-
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
   Jurusan:
-    kode: string unique
+    id: uuid primary
     nama: string
-    deskripsi: text nullable
     softDeletes: true
-    timestamps: true
-    relationships:
-      hasMany: Kelas
-
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
   Kelas:
+    id: uuid primary
     nama: string
-    tingkat: "enum:10,11,12"
-    jurusan_id: id foreignId:Jurusan onUpdate:cascade onDelete:restrict
     softDeletes: true
-    timestamps: true
-    relationships:
-      belongsTo: Jurusan
-      hasMany: Rombel
-
-  Guru:
-    nip: string unique nullable
-    nama: string
-    email: string unique nullable
-    no_hp: string nullable
-    alamat: text nullable
-    softDeletes: true
-    timestamps: true
-    relationships:
-      hasMany: Rombel, JadwalPelajaran, Jurnal
-      belongsToMany: MataPelajaran
-
-  Siswa:
-    nis: string unique
-    nisn: string unique nullable
-    nama: string
-    jenis_kelamin: "enum:L,P"
-    tempat_lahir: string nullable
-    tanggal_lahir: date nullable
-    alamat: text nullable
-    no_hp: string nullable
-    email: string nullable
-    nama_wali: string nullable
-    no_hp_wali: string nullable
-    softDeletes: true
-    timestamps: true
-    relationships:
-      belongsToMany: Rombel
-      hasMany: Kehadiran
-
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
   Rombel:
+    id: uuid primary
     nama: string
-    kode: string unique
-    instansi_id: id foreignId:Instansi onUpdate:cascade onDelete:restrict
-    tahun_pelajaran_id: id foreignId:TahunPelajaran onUpdate:cascade onDelete:restrict
-    kelas_id: id foreignId:Kelas onUpdate:cascade onDelete:restrict
-    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict comment:'Wali Kelas'
-    kapasitas: integer default:36
     softDeletes: true
-    timestamps: true
-    relationships:
-      belongsTo: Instansi, TahunPelajaran, Kelas, Guru (as wali_kelas)
-      belongsToMany: Siswa
-      hasMany: JadwalPelajaran, Jurnal
-
-  JadwalPelajaran:
-    nama: string nullable
-    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:cascade
-    mata_pelajaran_id: id foreignId:MataPelajaran onUpdate:cascade onDelete:restrict
-    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict
-    tahun_pelajaran_id: id foreignId:TahunPelajaran onUpdate:cascade onDelete:cascade
-    hari: "enum:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu"
-    jam_ke: integer comment:'Jam pelajaran ke-'
-    jam_mulai: time
-    jam_selesai: time
-    ruangan: string nullable
-    is_aktif: boolean default:true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  Siswa:
+    id: uuid primary
+    nama: string
     softDeletes: true
-    timestamps: true
-    relationships:
-      belongsTo: Rombel, MataPelajaran, Guru, TahunPelajaran
-      hasMany: Jurnal
-
-  Jurnal:
-    jadwal_pelajaran_id: id foreignId:JadwalPelajaran onUpdate:cascade onDelete:restrict
-    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:restrict
-    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict
-    tanggal: date
-    jam_ke: integer
-    materi: text comment:'Materi yang diajarkan'
-    metode_pembelajaran: string nullable comment:'Ceramah, Diskusi, Praktik, dll'
-    catatan: text nullable comment:'Catatan tambahan'
-    jumlah_hadir: integer default:0
-    jumlah_sakit: integer default:0
-    jumlah_izin: integer default:0
-    jumlah_alpha: integer default:0
-    is_verified: boolean default:false comment:'Diverifikasi oleh kepala sekolah'
-    verified_at: timestamp nullable
-    verified_by: id nullable foreignId:users onUpdate:cascade onDelete:set_null
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Pegawai:
+    id: uuid primary
+    nama: string
     softDeletes: true
-    timestamps: true
-    relationships:
-      belongsTo: JadwalPelajaran, Rombel, Guru
-      hasMany: Kehadiran
-
-  Kehadiran:
-    jurnal_id: id foreignId:Jurnal onUpdate:cascade onDelete:cascade
-    siswa_id: id foreignId:Siswa onUpdate:cascade onDelete:cascade
-    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:cascade
-    tanggal: date
-    status: "enum:H,S,I,A"
-    keterangan: text nullable
-    timestamps: true
-    relationships:
-      belongsTo: Jurnal, Siswa, Rombel
-
-  # Tabel Pivot (Many-to-Many)
-  guru_mata_pelajaran:
-    guru_id: id foreignId:Guru onUpdate:cascade onDelete:cascade
-    mata_pelajaran_id: id foreignId:MataPelajaran onUpdate:cascade onDelete:cascade
-    timestamps: true
-    indexes:
-      - unique: [guru_id, mata_pelajaran_id]
-
-  rombel_siswa:
-    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:cascade
-    siswa_id: id foreignId:Siswa onUpdate:cascade onDelete:cascade
-    tanggal_masuk: date nullable
-    tanggal_keluar: date nullable
-    status: "enum:aktif,pindah,keluar,lulus"
-    timestamps: true
-    indexes:
-      - unique: [rombel_id, siswa_id]
-
-# ===============================================
-# Indexes untuk Performa
-# ===============================================
-indexes:
-  Instansi:
-    - nama
-  TahunPelajaran:
-    - is_aktif
-    - [tahun_mulai, tahun_selesai]
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  TahunAnggaran:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  TahunAjaran:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Kurikulum:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
   MataPelajaran:
-    - kode
-    - kelompok
-  Jurusan:
-    - kode
-  Kelas:
-    - tingkat
-    - jurusan_id
-  Guru:
-    - nip
-    - nama
-  Siswa:
-    - nis
-    - nisn
-    - nama
-  Rombel:
-    - kode
-    - [instansi_id, tahun_pelajaran_id]
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  JadwalPresensi:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  JadwalPendaftaran:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
   JadwalPelajaran:
-    - [rombel_id, hari, jam_ke]
-    - guru_id
-    - is_aktif
-  Jurnal:
-    - tanggal
-    - [rombel_id, tanggal]
-    - guru_id
-    - is_verified
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  JalurPendaftaran:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  PresensiPegawai:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  PresensiSiswa:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
   Kehadiran:
-    - [jurnal_id, siswa_id]
-    - tanggal
-    - status
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Jurnal:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  PoinPelanggaran:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  PoinPrestasi:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Konseling:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
