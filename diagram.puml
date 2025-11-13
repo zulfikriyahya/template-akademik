@@ -1,0 +1,157 @@
+@startuml Wilayah_dan_Instansi_ERD
+
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <b><color:red>PK</color></b> x
+!define foreign_key(x) <b><color:blue>FK</color></b> x
+!define unique(x) <b><color:green>UQ</color></b> x
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+' =============================================================================
+' WILAYAH
+' =============================================================================
+
+entity Provinsi {
+    primary_key(id) : UUID
+    --
+    nama : VARCHAR
+    kode_provinsi : VARCHAR
+    deleted_at : TIMESTAMP
+}
+
+entity Kabupaten {
+    primary_key(id) : UUID
+    --
+    foreign_key(provinsi_id) : UUID
+    nama : VARCHAR
+    kategori : ENUM('Kabupaten','Kota')
+    kode_kabupaten : VARCHAR
+    deleted_at : TIMESTAMP
+}
+
+entity Kecamatan {
+    primary_key(id) : UUID
+    --
+    foreign_key(kabupaten_id) : UUID
+    nama : VARCHAR
+    kode_kecamatan : VARCHAR
+    deleted_at : TIMESTAMP
+}
+
+entity Kelurahan {
+    primary_key(id) : UUID
+    --
+    foreign_key(kecamatan_id) : UUID
+    nama : VARCHAR
+    kode_kelurahan : VARCHAR
+    kode_pos : VARCHAR
+    deleted_at : TIMESTAMP
+}
+
+' =============================================================================
+' INSTANSI
+' =============================================================================
+
+entity Instansi {
+    primary_key(id) : UUID
+    --
+    nama : VARCHAR
+    unique(npsn) : VARCHAR
+    nss : VARCHAR (nullable)
+    logo : VARCHAR (nullable)
+    email : VARCHAR (nullable)
+    telepon : VARCHAR (nullable)
+    website : VARCHAR (nullable)
+    alamat : TEXT
+    foreign_key(provinsi_id) : UUID
+    foreign_key(kabupaten_id) : UUID
+    foreign_key(kecamatan_id) : UUID
+    foreign_key(kelurahan_id) : UUID
+    kode_pos : VARCHAR (nullable)
+    akreditasi : ENUM("A","B","C","TT") (nullable)
+    nilai_akreditasi : VARCHAR(5) (nullable)
+    tahun_akreditasi : VARCHAR(4) (nullable)
+    status : ENUM('Negeri','Swasta')
+    jenjang : ENUM("PAUD","RA","MI",..)
+    sk_pendirian : VARCHAR (nullable)
+    tahun_berdiri : YEAR (nullable)
+    deleted_at : TIMESTAMP
+}
+
+entity Departemen {
+    primary_key(id) : UUID
+    --
+    foreign_key(instansi_id) : UUID
+    nama : VARCHAR
+    deleted_at : TIMESTAMP
+}
+
+entity Jabatan {
+    primary_key(id) : UUID
+    --
+    foreign_key(departemen_id) : UUID
+    nama : VARCHAR
+    deleted_at : TIMESTAMP
+}
+
+' =============================================================================
+' RELATIONSHIPS WILAYAH
+' =============================================================================
+
+Provinsi ||--o{ Kabupaten : "has many"
+Kabupaten ||--o{ Kecamatan : "has many"
+Kecamatan ||--o{ Kelurahan : "has many"
+
+' =============================================================================
+' RELATIONSHIPS INSTANSI WITH WILAYAH
+' =============================================================================
+
+Provinsi ||--o{ Instansi : "located in"
+Kabupaten ||--o{ Instansi : "located in"
+Kecamatan ||--o{ Instansi : "located in"
+Kelurahan ||--o{ Instansi : "located in"
+
+' =============================================================================
+' RELATIONSHIPS INSTANSI INTERNAL
+' =============================================================================
+
+Instansi ||--o{ Departemen : "has many"
+Departemen ||--o{ Jabatan : "has many"
+
+' =============================================================================
+' NOTES
+' =============================================================================
+
+note right of Provinsi
+  <b>Provinsi</b>
+  - Parent dari struktur wilayah
+  - Memiliki relasi ke Kabupaten
+  - Soft Delete enabled
+end note
+
+note right of Instansi
+  <b>Instansi Pendidikan</b>
+  - Central entity untuk sistem
+  - Terhubung dengan semua modul
+  - NPSN adalah unique identifier
+  - Status: Negeri/Swasta
+  - Jenjang: PAUD - SMLB
+end note
+
+note right of Departemen
+  <b>Departemen</b>
+  Struktur organisasi
+  dalam instansi
+end note
+
+note right of Jabatan
+  <b>Jabatan</b>
+  Posisi dalam
+  departemen
+end note
+
+@enduml

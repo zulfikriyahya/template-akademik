@@ -1,0 +1,34 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use App\Models\Instansi;
+use App\Models\Jurusan;
+use App\Models\Kelas;
+
+class KelasFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Kelas::class;
+
+    /**
+     * Define the model's default state.
+     */
+    public function definition(): array
+    {
+        return [
+            'instansi_id' => Instansi::factory(),
+            'jurusan_id' => Jurusan::factory(),
+            'nama' => fake()->word(),
+            'kapasitas' => fake()->randomNumber(),
+            'urutan' => fake()->randomNumber(),
+            'is_active' => fake()->boolean(),
+        ];
+    }
+}
