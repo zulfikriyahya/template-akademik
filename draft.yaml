@@ -112,6 +112,11 @@ models:
     id: uuid primary
     instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -123,6 +128,11 @@ models:
     id: uuid primary
     instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -134,6 +144,41 @@ models:
     id: uuid primary
     instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  TahunEkstrakurikuler:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    pembimbing_id: uuid foreign:Pegawai onUpdate:cascade onDelete:restrict
+    jadwal: string:100 nullable
+    tempat: string:100 nullable
+    kuota: integer unsigned nullable
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Semester:
+    id: uuid primary
+    tahun_pelajaran_id: uuid foreign:TahunPelajaran onUpdate:cascade onDelete:restrict
+    nama: enum:"Ganjil","Genap"
+    semester_ke: tinyinteger unsigned
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -145,6 +190,10 @@ models:
     id: uuid primary
     instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
+    kode: string:10 unique index
+    tahun: year
+    deskripsi: text nullable
+    is_active: boolean default:true
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -155,7 +204,30 @@ models:
   MataPelajaran:
     id: uuid primary
     instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
-    nama: string
+    kurikulum_id: uuid foreignUuid:Kurikulum onUpdate:cascade onDelete:restrict
+    kode: string:20 unique index
+    nama: string:100 index
+    tingkat: tinyinteger unsigned nullable
+    kelompok: enum:"A","B","C"
+    urutan: integer unsigned default:0
+    kkm: decimal:5,2 default:75.00
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  KompetensiDasar:
+    id: uuid primary
+    mata_pelajaran_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
+    kode: string:20 index
+    deskripsi: text
+    jenis: enum:"Pengetahuan","Keterampilan"
+    tingkat: tinyinteger unsigned
+    semester_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
+    urutan: integer unsigned default:0
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -279,7 +351,7 @@ models:
   # =============================================================================
   OrangTua:
     id: uuid primary
-    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:cascade
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
     jenis: enum:'Ayah','Ibu','Wali'
     nama: string
     nik: string:16 nullable
@@ -440,20 +512,6 @@ models:
   # =============================================================================
   # NILAI & RAPOR
   # =============================================================================
-  KompetensiDasar:
-    id: uuid primary
-    mata_pelajaran_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
-    kurikulum_id: uuid foreignUuid:Kurikulum onUpdate:cascade onDelete:restrict
-    kode: string
-    deskripsi: text
-    jenis: enum:'Pengetahuan','Keterampilan'
-    softDeletes: true
-    # relationships:
-    #   #belongsTo:
-    #   #belongsToMany:
-    #   #hasOne:
-    #   #hasMany:
-
   Penilaian:
     id: uuid primary
     kompetensi_dasar_id: uuid foreignUuid:KompetensiDasar onUpdate:cascade onDelete:restrict
@@ -486,7 +544,7 @@ models:
 
   NilaiRapor:
     id: uuid primary
-    rapor_id: uuid foreignUuid:Rapor onUpdate:cascade onDelete:cascade
+    rapor_id: uuid foreignUuid:Rapor onUpdate:cascade onDelete:restrict
     mata_pelajaran_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
     nilai_pengetahuan: decimal:5,2 nullable
     nilai_keterampilan: decimal:5,2 nullable
@@ -585,9 +643,10 @@ models:
     id: uuid primary
     instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
+    kategori: enum:"Wajib","Pilihan"
     deskripsi: text nullable
     pembina_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
-    jadwal: string nullable
+    is_active: boolean default:true
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -597,9 +656,9 @@ models:
 
   AnggotaEkstrakurikuler:
     id: uuid primary
-    ekstrakurikuler_id: uuid foreignUuid:Ekstrakurikuler onUpdate:cascade onDelete:cascade
+    ekstrakurikuler_id: uuid foreignUuid:Ekstrakurikuler onUpdate:cascade onDelete:restrict
     siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
-    tahun_pelajaran_id: uuid foreignUuid:TahunPelajaran onUpdate:cascade onDelete:restrict
+    tahun_ekstrakurikuler_id: uuid foreignUuid:TahunEkstrakurikuler onUpdate:cascade onDelete:restrict
     tanggal_bergabung: date
     status: enum:'Aktif','Tidak Aktif'
     softDeletes: true
