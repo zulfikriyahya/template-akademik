@@ -2632,3 +2632,82 @@ public function panel(Panel $panel): Panel
         ]);
 }
 ```
+
+### ERD
+
+```mermaid
+erDiagram
+    Provinsi ||--o{ Kabupaten : "has many"
+    Provinsi ||--o{ InstansiPendidikan : "has many"
+
+    Kabupaten ||--o{ Kecamatan : "has many"
+    Kabupaten ||--o{ InstansiPendidikan : "has many"
+    Kabupaten }o--|| Provinsi : "belongs to"
+
+    Kecamatan ||--o{ Kelurahan : "has many"
+    Kecamatan ||--o{ InstansiPendidikan : "has many"
+    Kecamatan }o--|| Kabupaten : "belongs to"
+
+    Kelurahan ||--o{ InstansiPendidikan : "has many"
+    Kelurahan }o--|| Kecamatan : "belongs to"
+
+    InstansiPendidikan ||--o{ Departemen : "has many"
+    InstansiPendidikan ||--o{ TahunPelajaran : "has many"
+    InstansiPendidikan ||--o{ Siswa : "has many"
+    InstansiPendidikan ||--o{ Pegawai : "has many"
+    InstansiPendidikan ||--o{ Kelas : "has many"
+    InstansiPendidikan }o--|| Provinsi : "belongs to"
+    InstansiPendidikan }o--|| Kabupaten : "belongs to"
+    InstansiPendidikan }o--|| Kecamatan : "belongs to"
+    InstansiPendidikan }o--|| Kelurahan : "belongs to"
+
+    Departemen ||--o{ Jabatan : "has many"
+    Departemen ||--o{ Pegawai : "has many"
+    Departemen }o--|| InstansiPendidikan : "belongs to"
+
+    Jabatan ||--o{ Pegawai : "has many"
+    Jabatan }o--|| Departemen : "belongs to"
+
+    TahunPelajaran ||--o{ Semester : "has many"
+    TahunPelajaran ||--o{ RombonganBelajar : "has many"
+    TahunPelajaran }o--|| InstansiPendidikan : "belongs to"
+
+    Semester ||--o{ Rapor : "has many"
+    Semester ||--o{ JadwalPelajaran : "has many"
+    Semester }o--|| TahunPelajaran : "belongs to"
+
+    Kurikulum ||--o{ MataPelajaran : "has many"
+    Kurikulum ||--o{ RombonganBelajar : "has many"
+
+    MataPelajaran ||--o{ KompetensiDasar : "has many"
+    MataPelajaran ||--o{ GuruMataPelajaran : "has many"
+    MataPelajaran ||--o{ Nilai : "has many"
+    MataPelajaran }o--|| Kurikulum : "belongs to"
+
+    KompetensiDasar ||--o{ Nilai : "has many"
+    KompetensiDasar }o--|| MataPelajaran : "belongs to"
+
+    TingkatKelas ||--o{ Kelas : "has many"
+
+    Kelas ||--o{ RombonganBelajar : "has many"
+    Kelas }o--|| InstansiPendidikan : "belongs to"
+    Kelas }o--|| TingkatKelas : "belongs to"
+    Kelas }o--o| Jurusan : "belongs to"
+
+    Jurusan ||--o{ Kelas : "has many"
+    Jurusan }o--|| InstansiPendidikan : "belongs to"
+
+    RombonganBelajar ||--o{ AnggotaRombel : "has many"
+    RombonganBelajar ||--o{ JadwalPelajaran : "has many"
+    RombonganBelajar }o--|| InstansiPendidikan : "belongs to"
+    RombonganBelajar }o--|| TahunPelajaran : "belongs to"
+    RombonganBelajar }o--|| Kelas : "belongs to"
+    RombonganBelajar }o--|| Kurikulum : "belongs to"
+    RombonganBelajar }o--o| Pegawai : "wali kelas"
+
+    Ruangan ||--o{ JadwalPelajaran : "has many"
+    Ruangan }o--|| InstansiPendidikan : "belongs to"
+
+    JamPelajaran ||--o{ JadwalPelajaran : "has many"
+    JamPelajaran }o--|| InstansiPendidikan : "belongs to"
+```
