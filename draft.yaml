@@ -17,7 +17,7 @@ models:
   # ---------------------------------------------------------- #
   Kabupaten:
     id: uuid primary
-    kode_provinsi: string:2 foreign:provinsis.kode_provinsi onUpdate:cascade onDelete:restrict index
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict index
     kode_kabupaten: string:5 unique index
     nama: string:39 index
     kategori: string:9 index
@@ -32,7 +32,7 @@ models:
   # ---------------------------------------------------------- #
   Kecamatan:
     id: uuid primary
-    kode_kabupaten: string:5 foreign:kabupatens.kode_kabupaten onUpdate:cascade onDelete:restrict index
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict index
     kode_kecamatan: string:8 unique index
     nama: string:31 index
     relationships:
@@ -46,7 +46,7 @@ models:
   # ---------------------------------------------------------- #
   Kelurahan:
     id: uuid primary
-    kode_kecamatan: string:8 foreign:kecamatans.kode_kecamatan onUpdate:cascade onDelete:restrict index
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict index
     kode_kelurahan: string:13 index
     kode_pos: string:5 index
     nama: string:44 index
@@ -73,10 +73,10 @@ models:
     email: string:50 nullable
     website: string:100 nullable
     alamat: text
-    kode_provinsi: string:2 foreign:provinsis.kode_provinsi onUpdate:cascade onDelete:restrict index
-    kode_kabupaten: string:5 foreign:kabupatens.kode_kabupaten onUpdate:cascade onDelete:restrict index
-    kode_kecamatan: string:8 foreign:kecamatans.kode_kecamatan onUpdate:cascade onDelete:restrict index
-    kode_kelurahan: string:13 foreign:kelurahans.kode_kelurahan onUpdate:cascade onDelete:restrict index
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict index
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict index
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict index
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict index
     softDeletes: true
     timestamps: true
     relationships:
@@ -613,12 +613,10 @@ models:
     jumlah_saudara: tinyinteger unsigned nullable
     status_dalam_keluarga: enum:"Anak Kandung","Anak Tiri","Anak Angkat"
     alamat: text
-    rt: string:3 nullable
-    rw: string:3 nullable
-    kode_provinsi: string:2 foreign:provinsis.kode_provinsi onUpdate:cascade onDelete:restrict index
-    kode_kabupaten: string:5 foreign:kabupatens.kode_kabupaten onUpdate:cascade onDelete:restrict index
-    kode_kecamatan: string:8 foreign:kecamatans.kode_kecamatan onUpdate:cascade onDelete:restrict index
-    kode_kelurahan: string:13 foreign:kelurahans.kode_kelurahan onUpdate:cascade onDelete:restrict index
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict index
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict index
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict index
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict index
     telp_rumah: string:15 nullable
     hp_siswa: string:15 nullable
     email_siswa: string:100 nullable
@@ -770,12 +768,10 @@ models:
     tanggal_lahir: date
     status_pernikahan: enum:"Belum Menikah","Menikah","Cerai Hidup","Cerai Mati"
     alamat: text
-    rt: string:3 nullable
-    rw: string:3 nullable
-    kode_provinsi: string:2 foreign:provinsis.kode_provinsi onUpdate:cascade onDelete:restrict index
-    kode_kabupaten: string:5 foreign:kabupatens.kode_kabupaten onUpdate:cascade onDelete:restrict index
-    kode_kecamatan: string:8 foreign:kecamatans.kode_kecamatan onUpdate:cascade onDelete:restrict index
-    kode_kelurahan: string:13 foreign:kelurahans.kode_kelurahan onUpdate:cascade onDelete:restrict index
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict index
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict index
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict index
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict index
     telp_rumah: string:15 nullable
     hp: string:15 nullable
     email: string:100 nullable
@@ -4526,12 +4522,10 @@ models:
     tanggal_lahir: date
     agama: string:20
     alamat: text
-    rt: string:3 nullable
-    rw: string:3 nullable
-    kode_provinsi: string:2 foreign:provinsis.kode_provinsi onUpdate:cascade onDelete:restrict index
-    kode_kabupaten: string:5 foreign:kabupatens.kode_kabupaten onUpdate:cascade onDelete:restrict index
-    kode_kecamatan: string:8 foreign:kecamatans.kode_kecamatan onUpdate:cascade onDelete:restrict index
-    kode_kelurahan: string:13 foreign:kelurahans.kode_kelurahan onUpdate:cascade onDelete:restrict index
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict index
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict index
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict index
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict index
     no_telp: string:15 nullable
     email: string:100 nullable
     # Data Asal Sekolah
