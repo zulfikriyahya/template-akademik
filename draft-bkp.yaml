@@ -1,0 +1,1073 @@
+models:
+  # =============================================================================
+  # WILAYAH
+  # =============================================================================
+  Provinsi:
+    id: uuid primary
+    nama: string
+    kode_provinsi: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Kabupaten:
+    id: uuid primary
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict
+    nama: string
+    kategori: enum:'Kabupaten','Kota'
+    kode_kabupaten: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Kecamatan:
+    id: uuid primary
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict
+    nama: string
+    kode_kecamatan: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Kelurahan:
+    id: uuid primary
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict
+    nama: string
+    kode_kelurahan: string
+    kode_pos: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # INSTANSI
+  # =============================================================================
+  Instansi:
+    id: uuid primary
+    nama: string
+    npsn: string
+    nss: string nullable
+    logo: string nullable
+    email: string nullable
+    telepon: string nullable
+    website: string nullable
+    alamat: text
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict
+    kode_pos: string nullable
+    akreditasi: enum:"A","B","C","TT" nullable
+    nilai_akreditasi: string:5 nullable
+    tahun_akreditasi: string:4 nullable
+    status: enum:'Negeri','Swasta' default:'Negeri'
+    jenjang: enum:"PAUD","RA","MI","MTs","MA","MAK","TK","SD","SMP","SMA","SMK","SLB","SDLB","SMPLB","SMLB"
+    sk_pendirian: string nullable
+    tahun_berdiri: year nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Departemen:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Jabatan:
+    id: uuid primary
+    departemen_id: uuid foreignUuid:Departemen onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # PERIODE DAN AKADEMIK
+  # =============================================================================
+  TahunAnggaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  TahunPelajaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  TahunPendaftaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  TahunEkstrakurikuler:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    pembimbing_id: uuid foreign:Pegawai onUpdate:cascade onDelete:restrict
+    jadwal: string:100 nullable
+    tempat: string:100 nullable
+    kuota: integer unsigned nullable
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Semester:
+    id: uuid primary
+    tahun_pelajaran_id: uuid foreign:TahunPelajaran onUpdate:cascade onDelete:restrict
+    nama: enum:"Ganjil","Genap"
+    semester_ke: tinyinteger unsigned
+    tanggal_mulai: date
+    tanggal_selesai: date
+    is_active: boolean default:false index
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Kurikulum:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    kode: string:10 unique index
+    tahun: year
+    deskripsi: text nullable
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  MataPelajaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    kurikulum_id: uuid foreignUuid:Kurikulum onUpdate:cascade onDelete:restrict
+    kode: string:20 unique index
+    nama: string:100 index
+    tingkat: tinyinteger unsigned nullable
+    kelompok: enum:"A","B","C"
+    urutan: integer unsigned default:0
+    kkm: decimal:5,2 default:75.00
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  KompetensiDasar:
+    id: uuid primary
+    mata_pelajaran_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
+    kode: string:20 index
+    deskripsi: text
+    jenis: enum:"Pengetahuan","Keterampilan"
+    tingkat: tinyinteger unsigned
+    semester_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
+    urutan: integer unsigned default:0
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # ROMBEL DAN KELAS
+  # =============================================================================
+  Jurusan:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    jenjang: enum:"MA","MAK","SMA","SMK"
+    deskripsi: text nullable
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Kelas:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    jurusan_id: uuid foreignUuid:Jurusan onUpdate:cascade onDelete:restrict nullable
+    nama: string
+    kapasitas: integer unsigned
+    urutan: integer unsigned default:0
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Rombel:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    kelas_id: uuid foreignUuid:Kelas onUpdate:cascade onDelete:restrict
+    kurikulum_id: uuid foreignUuid:Kurikulum onUpdate:cascade onDelete:restrict
+    wali_kelas_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    tahun_pelajaran_id: uuid foreignUuid:TahunPelajaran onUpdate:cascade onDelete:restrict
+    nama: string
+    kapasitas: integer unsigned
+    jumlah_siswa: integer unsigned default:0
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # DETAIL SISWA & PEGAWAI
+  # =============================================================================
+  Siswa:
+    id: uuid primary
+    nama: string
+    user_id: id foreignId:User onUpdate:cascade onDelete:restrict
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nik: string:16 nullable
+    nisn: string:10 nullable
+    nipd: string nullable
+    jenis_kelamin: enum:'L','P'
+    tempat_lahir: string nullable
+    tanggal_lahir: date nullable
+    agama: enum:'Islam','Kristen','Katolik','Hindu','Buddha','Konghucu' nullable
+    anak_ke: integer nullable
+    jumlah_saudara: integer nullable
+    tinggi_badan: integer nullable
+    berat_badan: integer nullable
+    golongan_darah: enum:'A','B','AB','O' nullable
+    alamat: text
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict
+    telepon: string nullable
+    hp: string nullable
+    email: string nullable
+    foto: string nullable
+    status_tinggal: enum:'Bersama Orang Tua','Wali','Kost','Asrama' nullable
+    transportasi: enum:'Jalan Kaki','Sepeda','Motor','Mobil','Angkutan Umum','Jemputan' nullable
+    penerima_kps: boolean default:false
+    no_kps: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Pegawai:
+    id: uuid primary
+    user_id: id foreignId:User onUpdate:cascade onDelete:restrict
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    nik: string:16 nullable
+    nip: string nullable
+    nuptk: string nullable
+    jenis_kelamin: enum:'L','P'
+    tempat_lahir: string nullable
+    tanggal_lahir: date nullable
+    agama: enum:'Islam','Kristen','Katolik','Hindu','Buddha','Konghucu' nullable
+    status_perkawinan: enum:'Belum Menikah','Menikah','Cerai Hidup','Cerai Mati' nullable
+    golongan_darah: enum:'A','B','AB','O' nullable
+    alamat: text
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict
+    telepon: string nullable
+    hp: string nullable
+    email: string nullable
+    foto: string nullable
+    status_kepegawaian: enum:'PNS','PPPK','GTY','PTY','Honorer' nullable
+    jenis_ptk: enum:'Guru Mapel','Guru Kelas','Guru BK','Kepala Sekolah','Tenaga Administrasi','Tenaga Perpustakaan','Laboran','Penjaga Sekolah' nullable
+    tanggal_masuk: date nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # ORANG TUA / WALI
+  # =============================================================================
+  OrangTua:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    jenis: enum:'Ayah','Ibu','Wali'
+    nama: string
+    nik: string:16 nullable
+    tahun_lahir: year nullable
+    pendidikan: enum:'SD','SMP','SMA','D1','D2','D3','D4','S1','S2','S3','Tidak Sekolah' nullable
+    pekerjaan: string nullable
+    penghasilan: enum:'< 500.000','500.000 - 1.000.000','1.000.000 - 2.000.000','2.000.000 - 3.000.000','3.000.000 - 5.000.000','> 5.000.000' nullable
+    telepon: string nullable
+    hp: string nullable
+    alamat: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # JADWAL LENGKAP
+  # =============================================================================
+  JadwalPresensi:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    jenis: enum:'Pegawai','Siswa'
+    hari: enum:'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'
+    jam_masuk: time
+    batas_masuk: time
+    jam_pulang: time
+    batas_pulang: time
+    toleransi_terlambat: integer default:0
+    is_aktif: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  JadwalPendaftaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    tahun_pendaftaran_id: uuid foreignUuid:TahunPendaftaran onUpdate:cascade onDelete:restrict
+    nama: string
+    jalur_pendaftaran_id: uuid foreignUuid:JalurPendaftaran onUpdate:cascade onDelete:restrict
+    tanggal_mulai: date
+    tanggal_selesai: date
+    kuota: integer
+    biaya_pendaftaran: decimal:15,2 default:0
+    is_aktif: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  JadwalPelajaran:
+    id: uuid primary
+    rombel_id: uuid foreignUuid:Rombel onUpdate:cascade onDelete:restrict
+    mata_pelajaran_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    hari: enum:'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'
+    jam_mulai: time
+    jam_selesai: time
+    ruangan: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  JalurPendaftaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    deskripsi: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # PRESENSI & KEHADIRAN
+  # =============================================================================
+  PresensiPegawai:
+    id: uuid primary
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    jadwal_presensi_id: uuid foreignUuid:JadwalPresensi onUpdate:cascade onDelete:restrict
+    tanggal: date
+    jam_masuk: time nullable
+    jam_pulang: time nullable
+    status_masuk: enum:'Hadir','Terlambat','Izin','Sakit','Alpha' nullable
+    status_pulang: enum:'Tepat Waktu','Pulang Cepat' nullable
+    foto_masuk: string nullable
+    foto_pulang: string nullable
+    lokasi_masuk: string nullable
+    lokasi_pulang: string nullable
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  PresensiSiswa:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    jadwal_presensi_id: uuid foreignUuid:JadwalPresensi onUpdate:cascade onDelete:restrict
+    tanggal: date
+    jam_masuk: time nullable
+    jam_pulang: time nullable
+    status_masuk: enum:'Hadir','Terlambat','Izin','Sakit','Alpha' nullable
+    status_pulang: enum:'Tepat Waktu','Pulang Cepat' nullable
+    foto_masuk: string nullable
+    foto_pulang: string nullable
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Kehadiran:
+    id: uuid primary
+    jadwal_pelajaran_id: uuid foreignUuid:JadwalPelajaran onUpdate:cascade onDelete:restrict
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    tanggal: date
+    status: enum:'Hadir','Izin','Sakit','Alpha'
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Jurnal:
+    id: uuid primary
+    jadwal_pelajaran_id: uuid foreignUuid:JadwalPelajaran onUpdate:cascade onDelete:restrict
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    tanggal: date
+    materi: text
+    metode: string nullable
+    catatan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # NILAI & RAPOR
+  # =============================================================================
+  Penilaian:
+    id: uuid primary
+    kompetensi_dasar_id: uuid foreignUuid:KompetensiDasar onUpdate:cascade onDelete:restrict
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    rombel_id: uuid foreignUuid:Rombel onUpdate:cascade onDelete:restrict
+    jenis_penilaian: enum:'Harian','UTS','UAS','Praktek','Projek','Portofolio'
+    nilai: decimal:5,2
+    tanggal: date
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Rapor:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    rombel_id: uuid foreignUuid:Rombel onUpdate:cascade onDelete:restrict
+    semester: enum:'Ganjil','Genap'
+    catatan_wali_kelas: text nullable
+    tanggal_terbit: date nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  NilaiRapor:
+    id: uuid primary
+    rapor_id: uuid foreignUuid:Rapor onUpdate:cascade onDelete:restrict
+    mata_pelajaran_id: uuid foreignUuid:MataPelajaran onUpdate:cascade onDelete:restrict
+    nilai_pengetahuan: decimal:5,2 nullable
+    nilai_keterampilan: decimal:5,2 nullable
+    nilai_akhir: decimal:5,2
+    predikat: enum:'A','B','C','D'
+    deskripsi: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # BK & PELANGGARAN
+  # =============================================================================
+  PoinPelanggaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    kategori: enum:'Ringan','Sedang','Berat'
+    poin: integer
+    sanksi: text nullable
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  PoinPrestasi:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    kategori: enum:'Akademik','Non-Akademik'
+    tingkat: enum:'Kelas','Sekolah','Kecamatan','Kabupaten','Provinsi','Nasional','Internasional'
+    poin: integer
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  CatatanPelanggaran:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    poin_pelanggaran_id: uuid foreignUuid:PoinPelanggaran onUpdate:cascade onDelete:restrict
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    tanggal: date
+    keterangan: text nullable
+    tindak_lanjut: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  CatatanPrestasi:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    poin_prestasi_id: uuid foreignUuid:PoinPrestasi onUpdate:cascade onDelete:restrict
+    tanggal: date
+    keterangan: text nullable
+    penghargaan: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Konseling:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    tanggal: date
+    jenis: enum:'Individual','Kelompok','Klasikal'
+    topik: string
+    permasalahan: text
+    solusi: text nullable
+    tindak_lanjut: text nullable
+    status: enum:'Proses','Selesai'
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # EKSTRAKURIKULER
+  # =============================================================================
+  Ekstrakurikuler:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    kategori: enum:"Wajib","Pilihan"
+    deskripsi: text nullable
+    pembina_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  AnggotaEkstrakurikuler:
+    id: uuid primary
+    ekstrakurikuler_id: uuid foreignUuid:Ekstrakurikuler onUpdate:cascade onDelete:restrict
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    tahun_ekstrakurikuler_id: uuid foreignUuid:TahunEkstrakurikuler onUpdate:cascade onDelete:restrict
+    tanggal_bergabung: date
+    status: enum:'Aktif','Tidak Aktif'
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # PERPUSTAKAAN
+  # =============================================================================
+  RakBuku:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  KategoriBuku:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Buku:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    kategori_buku_id: uuid foreignUuid:KategoriBuku onUpdate:cascade onDelete:restrict
+    rak_buku_id: uuid foreignUuid:RakBuku onUpdate:cascade onDelete:restrict
+    kode_buku: string
+    judul: string
+    pengarang: string nullable
+    penerbit: string nullable
+    tahun_terbit: year nullable
+    isbn: string nullable
+    jumlah: integer default:1
+    stok_tersedia: integer default:1
+    lokasi_rak: string nullable
+    cover: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Peminjaman:
+    id: uuid primary
+    buku_id: uuid foreignUuid:Buku onUpdate:cascade onDelete:restrict
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict nullable
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict nullable
+    tanggal_pinjam: date
+    tanggal_kembali_rencana: date
+    tanggal_kembali_actual: date nullable
+    status: enum:'Dipinjam','Dikembalikan','Terlambat','Hilang'
+    denda: decimal:15,2 default:0
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # INVENTARIS
+  # =============================================================================
+  KategoriInventaris:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Inventaris:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    kategori_inventaris_id: uuid foreignUuid:KategoriInventaris onUpdate:cascade onDelete:restrict
+    kode_inventaris: string
+    nama: string
+    merk: string nullable
+    tahun_pengadaan: year nullable
+    harga_perolehan: decimal:15,2 default:0
+    kondisi: enum:'Baik','Rusak Ringan','Rusak Berat','Hilang'
+    lokasi: string nullable
+    keterangan: text nullable
+    foto: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Ruangan:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    jenis: enum:'Kelas','Lab','Perpustakaan','Kantor','Toilet','Musholla','Aula','Lainnya'
+    kapasitas: integer nullable
+    gedung: string:50 nullable
+    lantai: tinyinteger unsigned nullable
+    luas: decimal:10,2 nullable
+    kondisi: enum:'Baik','Rusak Ringan','Rusak Berat'
+    keterangan: text nullable
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # ALUMNI
+  # =============================================================================
+  Alumni:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    tahun_lulus: year
+    no_ijazah: string nullable
+    nilai_un: decimal:5,2 nullable
+    melanjutkan_ke: string nullable
+    bekerja_di: string nullable
+    alamat_sekarang: text nullable
+    telepon: string nullable
+    email: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # SURAT MENYURAT
+  # =============================================================================
+  JenisSurat:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    template: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  SuratKeluar:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    jenis_surat_id: uuid foreignUuid:JenisSurat onUpdate:cascade onDelete:restrict
+    nomor_surat: string
+    perihal: string
+    tujuan: string
+    tanggal_surat: date
+    isi_surat: text
+    penandatangan_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    file: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  SuratMasuk:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nomor_surat: string
+    pengirim: string
+    perihal: string
+    tanggal_surat: date
+    tanggal_terima: date
+    isi_ringkas: text nullable
+    file: string nullable
+    disposisi: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  PengajuanIzin:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict nullable
+    pegawai_id: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict nullable
+    jenis: enum:'Sakit','Izin','Cuti'
+    tanggal_mulai: date
+    tanggal_selesai: date
+    alasan: text
+    file_pendukung: string nullable
+    status: enum:'Menunggu','Disetujui','Ditolak'
+    catatan_approval: text nullable
+    disetujui_oleh: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict nullable
+    tanggal_approval: datetime nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # INFORMASI
+  # =============================================================================
+  Informasi:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    judul: string
+    konten: text
+    kategori: enum:'Pengumuman','Berita','Agenda','Artikel'
+    tanggal_publish: datetime
+    thumbnail: string nullable
+    is_published: boolean default:false
+    dibuat_oleh: uuid foreignUuid:Pegawai onUpdate:cascade onDelete:restrict
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # KEUANGAN
+  # =============================================================================
+  Rekening:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama_bank: string
+    nomor_rekening: string
+    atas_nama: string
+    saldo: decimal:15,2 default:0
+    is_aktif: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  AkunKeuangan:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    kode_akun: string
+    nama_akun: string
+    jenis: enum:'Aset','Liabilitas','Ekuitas','Pendapatan','Beban'
+    kategori: enum:'Operasional','Investasi','Pembiayaan'
+    parent_id: uuid foreignUuid:AkunKeuangan onUpdate:cascade onDelete:restrict nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  JenisPembayaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    deskripsi: text nullable
+    nominal: decimal:15,2
+    is_wajib: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Pembayaran:
+    id: uuid primary
+    siswa_id: uuid foreignUuid:Siswa onUpdate:cascade onDelete:restrict
+    jenis_pembayaran_id: uuid foreignUuid:JenisPembayaran onUpdate:cascade onDelete:restrict
+    tahun_anggaran_id: uuid foreignUuid:TahunAnggaran onUpdate:cascade onDelete:restrict
+    tanggal_pembayaran: date
+    nominal: decimal:15,2
+    metode: enum:'Tunai','Transfer','VA','QRIS'
+    nomor_transaksi: string nullable
+    rekening_id: uuid foreignUuid:Rekening onUpdate:cascade onDelete:restrict nullable
+    bukti_bayar: string nullable
+    status: enum:'Menunggu','Lunas','Gagal'
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Pemasukan:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    akun_keuangan_id: uuid foreignUuid:AkunKeuangan onUpdate:cascade onDelete:restrict
+    tahun_anggaran_id: uuid foreignUuid:TahunAnggaran onUpdate:cascade onDelete:restrict
+    rekening_id: uuid foreignUuid:Rekening onUpdate:cascade onDelete:restrict
+    tanggal: date
+    nomor_transaksi: string
+    uraian: text
+    nominal: decimal:15,2
+    sumber: string nullable
+    bukti: string nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  Pengeluaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    akun_keuangan_id: uuid foreignUuid:AkunKeuangan onUpdate:cascade onDelete:restrict
+    tahun_anggaran_id: uuid foreignUuid:TahunAnggaran onUpdate:cascade onDelete:restrict
+    rekening_id: uuid foreignUuid:Rekening onUpdate:cascade onDelete:restrict
+    tanggal: date
+    nomor_transaksi: string
+    uraian: text
+    nominal: decimal:15,2
+    penerima: string nullable
+    bukti: string nullable
+    status: enum:'Menunggu','Disetujui','Ditolak','Dibayar'
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  # =============================================================================
+  # KALENDER AKADEMIK
+  # =============================================================================
+  JamPelajaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:cascade
+    nama: string:50 index
+    jam_ke: tinyinteger unsigned
+    waktu_mulai: time
+    waktu_selesai: time
+    durasi_menit: integer unsigned
+    is_istirahat: boolean default:false
+    is_active: boolean default:true
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  HariLibur:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:cascade
+    nama: string:100 index
+    tanggal_mulai: date
+    tanggal_selesai: date
+    jenis: enum:"Nasional","Keagamaan","Sekolah","Lainnya"
+    keterangan: text nullable
+    is_cuti_bersama: boolean default:false
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+
+  KalenderAkademik:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:cascade
+    tahun_pelajaran_id: uuid foreign:TahunPelajaran onUpdate:cascade onDelete:cascade
+    nama: string:100 index
+    tanggal_mulai: date
+    tanggal_selesai: date
+    jenis: enum:"Pembelajaran","Ujian","Libur","Kegiatan"
+    warna: string:7 nullable
+    keterangan: text nullable
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
