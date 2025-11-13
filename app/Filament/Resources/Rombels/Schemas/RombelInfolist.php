@@ -21,6 +21,13 @@ class RombelInfolist
                     ->label('Kelas'),
                 TextEntry::make('guru.nama')
                     ->label('Guru'),
+                TextEntry::make('siswas')
+                    ->label('Siswa')
+                    ->getStateUsing(fn (Rombel $record): string => $record->siswas
+                        ->pluck('nama')
+                        ->implode(', ')
+                    )
+                    ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
