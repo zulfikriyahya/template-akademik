@@ -1,3 +1,7 @@
+# ===============================================================================
+# MADRASAH SUPER APP (MSA)
+# ===============================================================================
+
 models:
   # =============================================================================
   Provinsi:
@@ -49,6 +53,25 @@ models:
   Instansi:
     id: uuid primary
     nama: string
+    npsn: string
+    nss: string nullable
+    logo: string nullable
+    email: string nullable
+    telepon: string nullable
+    website: string nullable
+    alamat: text
+    provinsi_id: uuid foreignUuid:Provinsi onUpdate:cascade onDelete:restrict
+    kabupaten_id: uuid foreignUuid:Kabupaten onUpdate:cascade onDelete:restrict
+    kecamatan_id: uuid foreignUuid:Kecamatan onUpdate:cascade onDelete:restrict
+    kelurahan_id: uuid foreignUuid:Kelurahan onUpdate:cascade onDelete:restrict
+    kode_pos: string nullable
+    akreditasi: enum:"A","B","C","TT" nullable
+    nilai_akreditasi: string:5 nullable
+    tahun_akreditasi: string:4 nullable
+    status: enum:'Negeri','Swasta' default:'Negeri'
+    jenjang: enum:"PAUD","RA","MI","MTs","MA","MAK","TK","SD","SMP","SMA","SMK","SLB","SDLB","SMPLB","SMLB"
+    sk_pendirian: string nullable
+    tahun_berdiri: year nullable
     softDeletes: true
     # relationships:
     #   #belongsTo:
@@ -57,6 +80,7 @@ models:
     #   #hasMany:
   Departemen:
     id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
     softDeletes: true
     # relationships:
@@ -66,6 +90,48 @@ models:
     #   #hasMany:
   Jabatan:
     id: uuid primary
+    departemen_id: uuid foreignUuid:Departemen onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  TahunAnggaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  TahunPelajaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Kurikulum:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  MataPelajaran:
+    id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
     softDeletes: true
     # relationships:
@@ -76,6 +142,7 @@ models:
   # =============================================================================
   Jurusan:
     id: uuid primary
+    instansi_id: uuid foreignUuid:Instansi onUpdate:cascade onDelete:restrict
     nama: string
     softDeletes: true
     # relationships:
@@ -85,6 +152,7 @@ models:
     #   #hasMany:
   Kelas:
     id: uuid primary
+    jurusan_id: uuid foreignUuid:Jurusan onUpdate:cascade onDelete:restrict
     nama: string
     softDeletes: true
     # relationships:
@@ -94,6 +162,8 @@ models:
     #   #hasMany:
   Rombel:
     id: uuid primary
+    kelas_id: uuid foreignUuid:Kelas onUpdate:cascade onDelete:restrict
+    tahun_pelajaran_id: uuid foreignUuid:TahunPelajaran onUpdate:cascade onDelete:restrict
     nama: string
     softDeletes: true
     # relationships:
@@ -112,43 +182,6 @@ models:
     #   #hasOne:
     #   #hasMany:
   Pegawai:
-    id: uuid primary
-    nama: string
-    softDeletes: true
-    # relationships:
-    #   #belongsTo:
-    #   #belongsToMany:
-    #   #hasOne:
-    #   #hasMany:
-  # =============================================================================
-  TahunAnggaran:
-    id: uuid primary
-    nama: string
-    softDeletes: true
-    # relationships:
-    #   #belongsTo:
-    #   #belongsToMany:
-    #   #hasOne:
-    #   #hasMany:
-  TahunAjaran:
-    id: uuid primary
-    nama: string
-    softDeletes: true
-    # relationships:
-    #   #belongsTo:
-    #   #belongsToMany:
-    #   #hasOne:
-    #   #hasMany:
-  Kurikulum:
-    id: uuid primary
-    nama: string
-    softDeletes: true
-    # relationships:
-    #   #belongsTo:
-    #   #belongsToMany:
-    #   #hasOne:
-    #   #hasMany:
-  MataPelajaran:
     id: uuid primary
     nama: string
     softDeletes: true
@@ -251,6 +284,62 @@ models:
     #   #hasOne:
     #   #hasMany:
   Konseling:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  Informasi:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  # =============================================================================
+  Rekening:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  AkunKeuangan:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Pembayaran:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Pemasukan:
+    id: uuid primary
+    nama: string
+    softDeletes: true
+    # relationships:
+    #   #belongsTo:
+    #   #belongsToMany:
+    #   #hasOne:
+    #   #hasMany:
+  Pengeluaran:
     id: uuid primary
     nama: string
     softDeletes: true
