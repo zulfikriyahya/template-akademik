@@ -1,47 +1,208 @@
+# ===============================================
+# Blueprint Aplikasi Jurnal Kelas/Jurnal Mengajar
+# ===============================================
+
 models:
   Instansi:
     nama: string
+    alamat: text nullable
+    kode_instansi: string unique nullable
     softDeletes: true
+    timestamps: true
     relationships:
       hasMany: Rombel
 
   TahunPelajaran:
     nama: string
+    tahun_mulai: year
+    tahun_selesai: year
+    semester: "enum:1,2"
+    is_aktif: boolean default:false
     softDeletes: true
+    timestamps: true
     relationships:
-      hasMany: Rombel
+      hasMany: Rombel, JadwalPelajaran
+
+  MataPelajaran:
+    kode: string unique
+    nama: string
+    kelompok: "enum:A,B,C"
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsToMany: Guru
+      hasMany: JadwalPelajaran
 
   Jurusan:
+    kode: string unique
     nama: string
+    deskripsi: text nullable
     softDeletes: true
+    timestamps: true
     relationships:
       hasMany: Kelas
 
   Kelas:
     nama: string
+    tingkat: "enum:10,11,12"
     jurusan_id: id foreignId:Jurusan onUpdate:cascade onDelete:restrict
     softDeletes: true
+    timestamps: true
     relationships:
+      belongsTo: Jurusan
       hasMany: Rombel
 
   Guru:
+    nip: string unique nullable
     nama: string
+    email: string unique nullable
+    no_hp: string nullable
+    alamat: text nullable
     softDeletes: true
+    timestamps: true
     relationships:
-      hasMany: Rombel
+      hasMany: Rombel, JadwalPelajaran, Jurnal
+      belongsToMany: MataPelajaran
 
   Siswa:
+    nis: string unique
+    nisn: string unique nullable
     nama: string
+    jenis_kelamin: "enum:L,P"
+    tempat_lahir: string nullable
+    tanggal_lahir: date nullable
+    alamat: text nullable
+    no_hp: string nullable
+    email: string nullable
+    nama_wali: string nullable
+    no_hp_wali: string nullable
     softDeletes: true
+    timestamps: true
     relationships:
-      belongsToMany: Rombel # UBAH INI!
+      belongsToMany: Rombel
+      hasMany: Kehadiran
 
   Rombel:
-    nama: string # Tambahkan nama rombel, misal: "X IPA 1"
+    nama: string
+    kode: string unique
     instansi_id: id foreignId:Instansi onUpdate:cascade onDelete:restrict
     tahun_pelajaran_id: id foreignId:TahunPelajaran onUpdate:cascade onDelete:restrict
     kelas_id: id foreignId:Kelas onUpdate:cascade onDelete:restrict
-    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict
+    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict comment:'Wali Kelas'
+    kapasitas: integer default:36
     softDeletes: true
+    timestamps: true
     relationships:
-      belongsToMany: Siswa # TAMBAH INI!
+      belongsTo: Instansi, TahunPelajaran, Kelas, Guru (as wali_kelas)
+      belongsToMany: Siswa
+      hasMany: JadwalPelajaran, Jurnal
+
+  JadwalPelajaran:
+    nama: string nullable
+    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:cascade
+    mata_pelajaran_id: id foreignId:MataPelajaran onUpdate:cascade onDelete:restrict
+    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict
+    tahun_pelajaran_id: id foreignId:TahunPelajaran onUpdate:cascade onDelete:cascade
+    hari: "enum:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu"
+    jam_ke: integer comment:'Jam pelajaran ke-'
+    jam_mulai: time
+    jam_selesai: time
+    ruangan: string nullable
+    is_aktif: boolean default:true
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsTo: Rombel, MataPelajaran, Guru, TahunPelajaran
+      hasMany: Jurnal
+
+  Jurnal:
+    jadwal_pelajaran_id: id foreignId:JadwalPelajaran onUpdate:cascade onDelete:restrict
+    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:restrict
+    guru_id: id foreignId:Guru onUpdate:cascade onDelete:restrict
+    tanggal: date
+    jam_ke: integer
+    materi: text comment:'Materi yang diajarkan'
+    metode_pembelajaran: string nullable comment:'Ceramah, Diskusi, Praktik, dll'
+    catatan: text nullable comment:'Catatan tambahan'
+    jumlah_hadir: integer default:0
+    jumlah_sakit: integer default:0
+    jumlah_izin: integer default:0
+    jumlah_alpha: integer default:0
+    is_verified: boolean default:false comment:'Diverifikasi oleh kepala sekolah'
+    verified_at: timestamp nullable
+    verified_by: id nullable foreignId:users onUpdate:cascade onDelete:set_null
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsTo: JadwalPelajaran, Rombel, Guru
+      hasMany: Kehadiran
+
+  Kehadiran:
+    jurnal_id: id foreignId:Jurnal onUpdate:cascade onDelete:cascade
+    siswa_id: id foreignId:Siswa onUpdate:cascade onDelete:cascade
+    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:cascade
+    tanggal: date
+    status: "enum:H,S,I,A"
+    keterangan: text nullable
+    timestamps: true
+    relationships:
+      belongsTo: Jurnal, Siswa, Rombel
+
+  # Tabel Pivot (Many-to-Many)
+  guru_mata_pelajaran:
+    guru_id: id foreignId:Guru onUpdate:cascade onDelete:cascade
+    mata_pelajaran_id: id foreignId:MataPelajaran onUpdate:cascade onDelete:cascade
+    timestamps: true
+    indexes:
+      - unique: [guru_id, mata_pelajaran_id]
+
+  rombel_siswa:
+    rombel_id: id foreignId:Rombel onUpdate:cascade onDelete:cascade
+    siswa_id: id foreignId:Siswa onUpdate:cascade onDelete:cascade
+    tanggal_masuk: date nullable
+    tanggal_keluar: date nullable
+    status: "enum:aktif,pindah,keluar,lulus"
+    timestamps: true
+    indexes:
+      - unique: [rombel_id, siswa_id]
+
+# ===============================================
+# Indexes untuk Performa
+# ===============================================
+indexes:
+  Instansi:
+    - nama
+  TahunPelajaran:
+    - is_aktif
+    - [tahun_mulai, tahun_selesai]
+  MataPelajaran:
+    - kode
+    - kelompok
+  Jurusan:
+    - kode
+  Kelas:
+    - tingkat
+    - jurusan_id
+  Guru:
+    - nip
+    - nama
+  Siswa:
+    - nis
+    - nisn
+    - nama
+  Rombel:
+    - kode
+    - [instansi_id, tahun_pelajaran_id]
+  JadwalPelajaran:
+    - [rombel_id, hari, jam_ke]
+    - guru_id
+    - is_aktif
+  Jurnal:
+    - tanggal
+    - [rombel_id, tanggal]
+    - guru_id
+    - is_verified
+  Kehadiran:
+    - [jurnal_id, siswa_id]
+    - tanggal
+    - status
